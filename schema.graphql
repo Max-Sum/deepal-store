@@ -55,13 +55,7 @@ input StringFilter {
   contains: String
   startsWith: String
   endsWith: String
-  mode: QueryMode
   not: NestedStringFilter
-}
-
-enum QueryMode {
-  default
-  insensitive
 }
 
 input NestedStringFilter {
@@ -181,6 +175,7 @@ enum ImageExtension {
 
 input AppWhereUniqueInput {
   id: ID
+  packageName: String
 }
 
 input AppWhereInput {
@@ -223,7 +218,6 @@ input StringNullableFilter {
   contains: String
   startsWith: String
   endsWith: String
-  mode: QueryMode
   not: NestedStringNullableFilter
 }
 
@@ -536,6 +530,11 @@ enum KeystoneAdminUIFieldMetaItemViewFieldMode {
 enum KeystoneAdminUIFieldMetaItemViewFieldPosition {
   form
   sidebar
+}
+
+enum QueryMode {
+  default
+  insensitive
 }
 
 type KeystoneAdminUIFieldGroupMeta {

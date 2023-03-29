@@ -135,7 +135,7 @@ export const lists = {
       supportHorizontalKeyboard: checkbox({ defaultValue: true }),
       versionName: text({ui: { createView: { fieldMode: 'hidden' }, itemView: {fieldMode: 'hidden'} }}),
       versionCode: integer({ui: { createView: { fieldMode: 'hidden' }, itemView: {fieldMode: 'hidden'} }}),
-      packageName: text({ui: { createView: { fieldMode: 'hidden' }, itemView: {fieldMode: 'hidden'} }})
+      packageName: text({isIndexed: 'unique', ui: { createView: { fieldMode: 'hidden' }, itemView: {fieldMode: 'hidden'} }})
     },
 
     hooks: {

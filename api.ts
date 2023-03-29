@@ -56,7 +56,7 @@ async function getApps(req: Request, res: Response) {
   }
   await context.query.Type.findOne({
     where: { id: typeID.toString() },
-    query: 'apps { id name description owner {name} releaseTime apk {filesize url} logo {url} versionCode versionName supportHorizontalKeyboard showStatusBar }'
+    query: 'apps { id name description owner {name} releaseTime apk {filesize url} logo {url} packageName versionCode versionName supportHorizontalKeyboard showStatusBar }'
   }).then((value) => {
     let apps = value.apps.map((item) => {
       return {
@@ -64,6 +64,7 @@ async function getApps(req: Request, res: Response) {
         "app_name": item.name,
         "description": item.description,
         "release_time": Math.floor(new Date(item.releaseTime).getTime()/1000),
+        "package_name": item.packageName,
         "package_url": item.apk.url,
         "package_size": item.apk.filesize,
         "logo_image_url": item.logo.url,
@@ -96,18 +97,20 @@ async function getUpdatedApps(req: Request, res: Response) {
   let context: Context = res.locals.context
   let versionList: any[] = req.body.package_version_list
   let apps: any[] = [];
-  versionList.forEach(async pkg => {
+  for (let pkg of versionList) {
     let name:string = pkg.package_name;
     let ver:number = pkg.version_code;
     await context.query.App.findOne({
-      where: [{ packageName: name }, { versionCode: { gt: ver } }],
-      query: 'id name description owner {name} releaseTime apk {filesize url} logo {url} versionCode versionName supportHorizontalKeyboard showStatusBar'
+      where: { packageName: name },
+      query: 'id name description owner {name} releaseTime apk {filesize url} logo {url} packageName versionCode versionName supportHorizontalKeyboard showStatusBar'
     }).then((value) => {
+      if (value == null || value.versionCode <= ver) { return; }
       apps.push({
         "id": value.id,
         "app_name": value.name,
         "description": value.description,
         "release_time": Math.floor(new Date(value.releaseTime).getTime()/1000),
+        "package_name": value.packageName,
         "package_url": value.apk.url,
         "package_size": value.apk.filesize,
         "logo_image_url": value.logo.url,
@@ -122,7 +125,7 @@ async function getUpdatedApps(req: Request, res: Response) {
         "status": 1
       });
     });
-  });
+  }
   res.json({
     "data": {
       "has_more": false,
