@@ -4,7 +4,7 @@ WORKDIR /app
 COPY . .
 
 RUN mkdir -p public/apps && mkdir -p public/imgs
-RUN yarn && yarn keystone build
+RUN yarn --production && yarn keystone build
 
 EXPOSE 3000
 
