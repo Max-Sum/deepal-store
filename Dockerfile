@@ -6,9 +6,6 @@ COPY . .
 RUN mkdir -p public/apps && mkdir -p public/imgs
 RUN yarn && yarn keystone build
 
-ARG https_proxy=http://172.19.224.1:17890
-ARG http_proxy=http://172.19.224.1:17890
-
 EXPOSE 3000
 
 VOLUME [ "/app/public" ]
