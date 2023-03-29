@@ -5,8 +5,10 @@ COPY . .
 
 RUN mkdir -p public/apps && mkdir -p public/imgs
 RUN yarn --production --ignore-scripts \
- && npm rebuild --arch=$BUILDPLATFORM --target_arch=$TARGETPLATFORM \
- && yarn keystone build 
+ && yarn keystone build \
+ && apk --no-cache add patch \
+ && patch schema.prisma schema.prisma.patch \
+ && yarn prisma generate
 
 FROM node:16-alpine
 
