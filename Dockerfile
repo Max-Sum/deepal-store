@@ -1,10 +1,17 @@
-FROM node:16-alpine
+FROM --platform=$BUILDPLATFORM node:16-alpine AS build
 
 WORKDIR /app
 COPY . .
 
 RUN mkdir -p public/apps && mkdir -p public/imgs
-RUN yarn --production && yarn keystone build
+RUN yarn --production --ignore-scripts \
+ && npm rebuild --arch=$BUILDPLATFORM --target_arch=$TARGETPLATFORM \
+ && yarn keystone build 
+
+FROM node:16-alpine
+
+WORKDIR /app
+COPY --from=build /app /app
 
 EXPOSE 3000
 
