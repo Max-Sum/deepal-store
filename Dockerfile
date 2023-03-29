@@ -1,19 +1,25 @@
 FROM --platform=$BUILDPLATFORM node:16-alpine AS build
 
 WORKDIR /app
-COPY . .
+COPY package.json yarn.lock .yarnrc.yml /app/
+
+ARG TARGETPLATFORM
 
 RUN mkdir -p public/apps && mkdir -p public/imgs
-RUN yarn --production --ignore-scripts \
- && yarn keystone build \
- && apk --no-cache add patch \
- && patch schema.prisma schema.prisma.patch \
- && yarn prisma generate
+RUN export npm_config_target_arch=$TARGETPLATFORM \
+ && yarn --production --ignore-scripts \
+ && npm rebuild --arch=$BUILDPLATFORM --target_arch=$TARGETPLATFORM
 
 FROM node:16-alpine
 
 WORKDIR /app
 COPY --from=build /app /app
+COPY . /app/
+
+RUN yarn keystone build \
+ && apk --no-cache add patch \
+ && patch schema.prisma schema.prisma.patch \
+ && yarn prisma generate
 
 EXPOSE 3000
 
