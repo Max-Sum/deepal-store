@@ -2,13 +2,9 @@ FROM --platform=$BUILDPLATFORM node:16-alpine AS build
 
 WORKDIR /app
 COPY package.json yarn.lock .yarnrc.yml /app/
+COPY .yarn .yarn
 
-ARG TARGETPLATFORM
-
-RUN mkdir -p public/apps && mkdir -p public/imgs
-RUN export npm_config_target_arch=$TARGETPLATFORM \
- && yarn --production --ignore-scripts \
- && npm rebuild --arch=$BUILDPLATFORM --target_arch=$TARGETPLATFORM
+RUN yarn workspaces focus --all --production
 
 FROM node:16-alpine
 
@@ -19,7 +15,7 @@ COPY . /app/
 RUN yarn keystone build \
  && apk --no-cache add patch \
  && patch schema.prisma schema.prisma.patch \
- && yarn prisma generate
+ && yarn keystone prisma generate
 
 EXPOSE 3000
 
