@@ -15,7 +15,7 @@ COPY . /app/
 RUN yarn keystone build \
  && apk --no-cache add patch \
  && patch schema.prisma schema.prisma.patch \
- && yarn keystone prisma generate
+ && yarn prisma generate
 
 EXPOSE 3000
 

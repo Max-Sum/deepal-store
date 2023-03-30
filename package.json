@@ -11,10 +11,14 @@
     "@keystone-6/core": "^5.1.0",
     "dotenv": "^16.0.3",
     "node-apk": "^1.2.1",
+    "prisma": "^4.12.0",
     "typescript": "^5.0.2"
   },
   "devDependencies": {
     "@types/node": "^18.15.11"
   },
-  "packageManager": "yarn@3.5.0"
+  "packageManager": "yarn@3.5.0",
+  "resolutions": {
+    ".prisma": "link:node-modules/.prisma"
+  }
 }
